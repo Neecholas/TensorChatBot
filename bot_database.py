@@ -13,8 +13,13 @@ c = connection.cursor()
 
 def create_table():
   c.execute("""CREATE TABLE IF NOT EXISTS parent_reply(
-    parent_id TEXT PRIMARY KEY, comment.id TEXT UNIQUE,
-    parent TEXT, comment TEXT, subreddit TEXT, unit INT, score INT
+    parent_id TEXT PRIMARY KEY,
+    comment_id TEXT UNIQUE,
+    parent TEXT,
+    comment TEXT,
+    subreddit TEXT,
+    unit INT,
+    score INT
     )""")
   #creates a table and sets the variables within and their data type
 
