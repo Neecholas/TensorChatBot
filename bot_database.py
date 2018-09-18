@@ -23,11 +23,29 @@ def create_table():
     )""")
   #creates a table and sets the variables within and their data type
 
+def format_data(data):
+  data = data.replace("\n"," newlinechar ").replace("\r"," newlinechar ").replace('"', "'")
+  #normalises the data and returns it
+  return data
+
+def find_parent(pid):
+  try:
+    sql = "SELECT comment FROM parent_reply WHERE comment_id = '{}' LIMIT 1".format(pid)
+    c.execute(sql)
+    result = c.fetchone()
+    if result != None:
+      return result[0]
+    else: return False
+  except Exception as e:
+    #print("find_parent", e)
+    return False
+    #finds the parent id by getting the id of the parent and seeing if it corresponds to the comment
+
 if __name__ == "__main__":
   create_table()
   row_counter = 0
   paired_rows = 0
-  with open("C:/Users/right/Downloads/Chatbot_data/reddit_data/{}/RC_{}".format(timeframe.split('-')[0], timeframe), buffer=1000) as f:
+  with open("/mnt/c/Users/right/Downloads/Chatbot_data/reddit_data/{}/RC_{}".format(timeframe.split('-')[0], timeframe)) as f:
   #opens the file and takes the timeframe by splitting the initial timeframe string
   #and taking the first part (array index 0)
   #then takes the full timeframe and has it as the second variable
@@ -39,5 +57,6 @@ if __name__ == "__main__":
       created_utc = row['created_utc']
       score = row['score']
       subreddit = row['subreddit']
+      #takes the JSON rows and assigns the important attributes to variables
 
 
