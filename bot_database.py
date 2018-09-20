@@ -2,7 +2,7 @@ import sqlite3
 import json
 from datetime import datetime
 
-timeframe = '2015-05'
+timeframe = '2011-12'
   # gets the file name and saves it to a variable
 sql_transaction = []
 
