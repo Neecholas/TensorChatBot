@@ -41,11 +41,33 @@ def find_parent(pid):
     return False
     #finds the parent id by getting the id of the parent and seeing if it corresponds to the comment
 
+def find_existing_score(pid):
+  try:
+    sql = "SELECT score FROM parent_reply WHERE parent_id = '{}' LIMIT 1".format(pid)
+    c.execute(sql)
+    result = c.fetchone()
+    if result != None:
+      return result[0]
+    else: return False
+  except Exception as e:
+    return False
+
+def acceptable(data):
+  if len(data.split(' ')) > 50 or len(data) < 1:
+    return False
+  elif len(data) > 1000:
+    return False
+  elif data = '[deleted]' or data = '[removed]':
+    return false
+  else:
+    return True
+
+
 if __name__ == "__main__":
   create_table()
   row_counter = 0
   paired_rows = 0
-  with open("/mnt/c/Users/right/Downloads/Chatbot_data/reddit_data/{}/RC_{}".format(timeframe.split('-')[0], timeframe)) as f:
+  with open("/mnt/c/Users/right/Downloads/Chatbot_data/reddit_data/{}/RC_{}".format(timeframe.split('-')[0], timeframe), buffering=1000) as f:
   #opens the file and takes the timeframe by splitting the initial timeframe string
   #and taking the first part (array index 0)
   #then takes the full timeframe and has it as the second variable
@@ -58,5 +80,11 @@ if __name__ == "__main__":
       score = row['score']
       subreddit = row['subreddit']
       #takes the JSON rows and assigns the important attributes to variables
+
+      if score >= 2:
+        existing_comment_score = find_existing_score(parent_id)
+        if existing_comment_score:
+          if score > existing_comment_score:
+
 
 
