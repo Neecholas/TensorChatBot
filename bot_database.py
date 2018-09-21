@@ -62,6 +62,27 @@ def acceptable(data):
   else:
     return True
 
+def sql_insert_replace_comment(commentid, parentid, parent, comment, subreddit, unit, score):
+  try:
+    sql = """UPDATE parent_reply SET parent_id = ?, comment_id = ?, parent = ?, comment = ?, subreddit = ?, unit = ?, score = ? WHERE parent_id = ?;""".format(parentid, commentid, parent, comment, subreddit, unit, score)
+    transaction_bldr(sql)
+  except Exception as e:
+    print('s-UPDATE insertion',str(e))
+
+def sql_insert_has_parent(commentid, parentid, parent,comment, subreddit, time, score):
+  try:
+    sql = """INSERT INTO parent_reply (parent_id, comment_id, parent, comment, subreddit, unit, score) VALUES ("{}","{}","{}","{}","{}","{}","{}");""".format(parentid, commentid, parent, comment, subreddit, unit, score)
+    transaction_bldr(sql)
+  except Exception as e:
+    print('s-PARENT insertion', str(e))
+
+def sql_insert_no_parent(commentid, parentid, comment, subreddit, time, score):
+  try:
+    sql = """INSERT INTO parent_reply () VALUES ("{}", "{}", "{}", "{}", "{}", "{}")""".format(commentid, parentid, comment, subreddit, time, score)
+    transaction_bldr(sql)
+  except Exception as e:
+    print('s-NO PARENT insertion', str(e))
+
 
 if __name__ == "__main__":
   create_table()
@@ -82,9 +103,16 @@ if __name__ == "__main__":
       #takes the JSON rows and assigns the important attributes to variables
 
       if score >= 2:
+        if acceptable(body)
         existing_comment_score = find_existing_score(parent_id)
         if existing_comment_score:
           if score > existing_comment_score:
+            sql_insert_replace_comment(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
+        else:
+          if parent_data:
+            sql_inster_has_parent(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
+          else:
+            sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
 
 
 
