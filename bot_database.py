@@ -57,8 +57,8 @@ def acceptable(data):
     return False
   elif len(data) > 1000:
     return False
-  elif data = '[deleted]' or data = '[removed]':
-    return false
+  elif data == '[deleted]' or data == '[removed]':
+    return False
   else:
     return True
 
@@ -110,23 +110,32 @@ if __name__ == "__main__":
       row_counter += 1
       row = json.loads(row)
       parent_id = row['parent_id']
+      comment_id = row['link_id']
       body = format_data(row['body'])
       created_utc = row['created_utc']
       score = row['score']
       subreddit = row['subreddit']
+      parent_data = find_parent(parent_id)
+
       #takes the JSON rows and assigns the important attributes to variables
 
       if score >= 2:
-        if acceptable(body)
-        existing_comment_score = find_existing_score(parent_id)
-        if existing_comment_score:
-          if score > existing_comment_score:
-            sql_insert_replace_comment(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
-        else:
-          if parent_data:
-            sql_inster_has_parent(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
+        if acceptable(body):
+          existing_comment_score = find_existing_score(parent_id)
+          if existing_comment_score:
+            if score > existing_comment_score:
+              print('works')
+              sql_insert_replace_comment(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
           else:
-            sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
-
+            #it gets to here
+            if parent_data:
+              #does not get here
+              sql_insert_has_parent(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
+              paired_rows += 1
+            else:
+              #gets here
+              sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
+      if row_counter % 100000 == 0:
+        print("Total rows read: {}, paired rows: {}, time: {}".format(row_counter, paired_rows, str(datetime.now())))
 
 
