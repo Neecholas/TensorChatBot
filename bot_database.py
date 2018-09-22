@@ -62,6 +62,20 @@ def acceptable(data):
   else:
     return True
 
+def transaction_bldr(sql):
+  global sql_transaction
+  sql_transaction.append(sql)
+  if len(sql_transaction) > 1000:
+    c.execute('BEGIN TRANSACTION')
+    for s in sql_transaction:
+      try:
+        c.execute(s)
+      except:
+        pass
+    connection.commit()
+    sql_transaction = []
+
+
 def sql_insert_replace_comment(commentid, parentid, parent, comment, subreddit, unit, score):
   try:
     sql = """UPDATE parent_reply SET parent_id = ?, comment_id = ?, parent = ?, comment = ?, subreddit = ?, unit = ?, score = ? WHERE parent_id = ?;""".format(parentid, commentid, parent, comment, subreddit, unit, score)
