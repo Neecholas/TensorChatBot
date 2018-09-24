@@ -6,7 +6,7 @@ timeframe = '2015-02'
   # gets the file name and saves it to a variable
 sql_transaction = []
 
-connection = sqlite3.connect('{}.db'.format(timeframe))
+connection = sqlite3.connect('../data_bases/{}.db'.format(timeframe))
   #connects the db to the file with timeframe.db as it's name
 c = connection.cursor()
   #allows the database to have SQL commands executed on it directly
