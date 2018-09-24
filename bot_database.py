@@ -138,3 +138,4 @@ if __name__ == "__main__":
               sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
       if row_counter % 100000 == 0:
         print("Total rows read: {}, paired rows: {}, time: {}".format(row_counter, paired_rows, str(datetime.now())))
+
