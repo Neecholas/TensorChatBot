@@ -2,7 +2,7 @@ import sqlite3
 import json
 from datetime import datetime
 
-timeframe = '2011-12'
+timeframe = '2015-02'
   # gets the file name and saves it to a variable
 sql_transaction = []
 
@@ -83,16 +83,16 @@ def sql_insert_replace_comment(commentid, parentid, parent, comment, subreddit, 
   except Exception as e:
     print('s-UPDATE insertion',str(e))
 
-def sql_insert_has_parent(commentid, parentid, parent,comment, subreddit, time, score):
+def sql_insert_has_parent(commentid, parentid, parent,comment, subreddit, unit, score):
   try:
     sql = """INSERT INTO parent_reply (parent_id, comment_id, parent, comment, subreddit, unit, score) VALUES ("{}","{}","{}","{}","{}","{}","{}");""".format(parentid, commentid, parent, comment, subreddit, unit, score)
     transaction_bldr(sql)
   except Exception as e:
     print('s-PARENT insertion', str(e))
 
-def sql_insert_no_parent(commentid, parentid, comment, subreddit, time, score):
+def sql_insert_no_parent(commentid, parentid, comment, subreddit, unit, score):
   try:
-    sql = """INSERT INTO parent_reply () VALUES ("{}", "{}", "{}", "{}", "{}", "{}")""".format(commentid, parentid, comment, subreddit, time, score)
+    sql = """INSERT INTO parent_reply (comment_id, parent_id, comment, subreddit, unit, score) VALUES ("{}", "{}", "{}", "{}", "{}", "{}")""".format(commentid, parentid, comment, subreddit, unit, score)
     transaction_bldr(sql)
   except Exception as e:
     print('s-NO PARENT insertion', str(e))
@@ -109,8 +109,9 @@ if __name__ == "__main__":
     for row in f:
       row_counter += 1
       row = json.loads(row)
+      #print(row)
       parent_id = row['parent_id']
-      comment_id = row['link_id']
+      comment_id = row['name']
       body = format_data(row['body'])
       created_utc = row['created_utc']
       score = row['score']
@@ -124,7 +125,7 @@ if __name__ == "__main__":
           existing_comment_score = find_existing_score(parent_id)
           if existing_comment_score:
             if score > existing_comment_score:
-              print('works')
+              #print('works')
               sql_insert_replace_comment(comment_id, parent_id, parent_data, body, subreddit, created_utc, score)
           else:
             #it gets to here
@@ -137,5 +138,4 @@ if __name__ == "__main__":
               sql_insert_no_parent(comment_id, parent_id, body, subreddit, created_utc, score)
       if row_counter % 100000 == 0:
         print("Total rows read: {}, paired rows: {}, time: {}".format(row_counter, paired_rows, str(datetime.now())))
-
 
