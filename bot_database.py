@@ -117,6 +117,7 @@ if __name__ == "__main__":
       score = row['score']
       subreddit = row['subreddit']
       parent_data = find_parent(parent_id)
+      print(row)
 
       #takes the JSON rows and assigns the important attributes to variables
 
